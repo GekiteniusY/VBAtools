@@ -1,14 +1,12 @@
 Sub
     Dim SeartchWord As String
 
-    Try 
-        SeartchWords = InputBox("検索文字列を入力してください。")
-    Catch ex As Exception
-        MsgBox(ex)
-    End Try
-
+    On Error GoTo ErrorHandler
+    
+    SeartchWords = InputBox("検索文字列を入力してください。")
     ActiveSheet.Range("A1").AutoFilter 1, SeartchWord
 
-
+    ErrorHandler:
+        MsgBox("エラーが発生しました")
 
 End Sub
