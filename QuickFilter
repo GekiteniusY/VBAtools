@@ -3,10 +3,14 @@ Sub
 
     On Error GoTo ErrorHandler
     
-    SeartchWords = InputBox("検索文字列を入力してください。")
-    ActiveSheet.Range("A1").AutoFilter 1, SeartchWord
+    SeartchWord = InputBox("検索文字列を入力してください。")
+    ActiveSheet.Range("A1").AutoFilter 1, "*" & SeartchWord & "*"
+
+    Exit Sub
+
 
     ErrorHandler:
         MsgBox("エラーが発生しました")
+        
 
 End Sub
