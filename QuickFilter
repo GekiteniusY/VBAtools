@@ -1,4 +1,4 @@
-Sub
+Sub フィルターON
     Dim SeartchWord As String
 
     On Error GoTo ErrorHandler
@@ -11,6 +11,8 @@ Sub
 
     ErrorHandler:
         MsgBox("エラーが発生しました")
-        
+End Sub
 
+Sub フィルターOFF
+    ActiveSheet.Range("A1").AutoFilter
 End Sub
