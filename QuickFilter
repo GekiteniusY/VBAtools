@@ -1,20 +1,24 @@
-Sub フィルターON
-    Dim SeartchWord As String
+Sub FilterON()
+'フィルタ機能を利用するだけのマクロです'
+'フィルタにかける列に文字列が多く格納されている場合、GUI上では表示に時間がかかるため作成しました'
 
-    On Error GoTo ErrorHandler
-    
-    SeartchWord = InputBox("検索文字列を入力してください。")
-    ActiveSheet.Range("A1").AutoFilter 1, "*" & SeartchWord & "*"
+Dim seartchWord As String
 
-    Exit Sub
+On Error GoTo ErrorHandler
+    seartchWord = InputBox("検索文字列を入力してください。")        '検索文字列の入力'
+    Call cellState(ActiveCell.Address)                              'アクティブセルの値を保存'
+    ActiveSheet.Range("A1").AutoFilter 1, "*" & seartchWord & "*"   '検索文字列を含むセルで検索'
+Exit Sub
 
+ErrorHandler:
+        MsgBox ("エラーが発生しました")
 
-    ErrorHandler:
-        MsgBox("エラーが発生しました")
 End Sub
 
-Sub フィルターOFF
-    ActiveSheet.Range("A1").AutoFilter
+Sub FilterOFF()
+    ActiveSheet.Range("A1").AutoFilter  'フィルタ解除'
+    ActiveCell = cellState("get")       'アクティブセルを復元'
+    Call cellState("clear")             'アクティブセルの値を初期化'
 End Sub
 
 Private Function cellState(state As String) As String
