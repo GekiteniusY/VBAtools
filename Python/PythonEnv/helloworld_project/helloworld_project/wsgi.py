@@ -14,3 +14,12 @@ from django.core.wsgi import get_wsgi_application
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'helloworld_project.settings')
 
 application = get_wsgi_application()
+
+
+
+# WebServerGatewqtInterfaceの略、wsgi
+# WebサーバーとPythonの間を取り持つ、プロトコル？ルール？を規定するもの
+
+
+
+

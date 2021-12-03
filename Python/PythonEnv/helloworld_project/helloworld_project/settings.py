@@ -10,23 +10,39 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+# Djangoにおいての全体的な設定をするために使われるファイル
+
+
+
+
 from pathlib import Path
+
+# Webアプリケーション等で利用する様々なファイルの格納場所（ディレクトリ）を
+# 管理する？ための記述→manage.pyが入っている場所
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+
+# ユーザーのパスワードを設定する記述
+# パスワードを作成するときに用いる情報
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-#fmr@26m@iw5d(t9lt#xe-%f&8ue=&aupy8_+8h$n1e4(i3547'
 
+# デバッグモードの有無
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
+# DjangoがWebサーバーからリクエストを受けるときに、許可を与えるホストを記述する
 ALLOWED_HOSTS = []
 
+
+# Djangoにおいて、どのアプリケーションを導入するかの記述
 
 # Application definition
 
@@ -39,6 +55,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+
+# DjangoがWebサーバーからリクエストを受け取った後、レスポンスを返すまでに
+# 行う処理（機能）の記述
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -49,8 +69,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+# Djangoがリクエストを受けたとき、Viewのコントローラー=urlsを指定する記述
 ROOT_URLCONF = 'helloworld_project.urls'
 
+
+
+# HTMLを生成するためのテンプレートを保存している場所などを指定する記述
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

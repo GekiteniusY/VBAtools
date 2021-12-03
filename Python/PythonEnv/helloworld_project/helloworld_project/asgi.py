@@ -14,3 +14,9 @@ from django.core.asgi import get_asgi_application
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'helloworld_project.settings')
 
 application = get_asgi_application()
+
+
+
+# wsgi.pyの発展版
+# 開発されたばかりのため、あまり使われていない
+
