@@ -20,7 +20,8 @@ import openpyxl
 """
 
 # 変数の定義
-
+filepath_parent = 'コピー元のファイルパス'
+save_dir = '保存先のディレクトリ'
 
 
 # 原本のエクセルファイルを別ディレクトリに複製
