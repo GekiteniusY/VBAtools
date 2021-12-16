@@ -25,32 +25,30 @@ Const PR_IN_REPLY_TO_ID = "http://schemas.microsoft.com/mapi/proptag/0x1042001E"
 Set objOutlook = New Outlook.Application
 Set myNamespace = objOutlook.GetNamespace("MAPI")
 Set myLocalFolder = myNamespace.Folders("ローカル保存用フォルダ") '【Custom】ローカルのルートフォルダを指定
-Set myLocalFolder_admin = myLocalFolder.Folders("admin") '【Custom】ルートフォルダの次の階層のフォルダを指定
+Set myLocalFolder_admin = myLocalFolder.Folders("admin")        '【Custom】ルートフォルダの次の階層のフォルダを指定
 Set adminMailItems = myLocalFolder_admin.Items
 
 'メールオブジェクトごとの処理
 '件名の取得、カテゴリの判定、返信要否の判定
 '一旦配列に格納する
-Dim strMsgID As String 'ループ処理用のID
-Dim strRpMsgID As String '返信メールのID
+'Dim strMsgID As String , strRpMsgID As String '返信メールの有無をチェックするための変数
 Dim objMailItem As Object
-Dim intreplystatus As Integer '返信、全員に返信、転送の識別子（102,103,104）
-Dim strInterplystatus As String 'Excel出力用の識別子
-Dim excelInput() As String 'Excel出力用の多次元配列
+Dim intreplystatus As Integer   '返信、全員に返信、転送の識別子（102,103,104）
+Dim strInterplystatus As String '返信有無の識別子
+Dim excelInput() As String      'Excel出力用の多次元配列
+Dim i as Integer : i = 0        '配列に格納するための変数
+Redim excelInput(adminMailitems.count, 4)
 
-Redim excelInput(adminMailitems.count, 5)
 
-'adminフォルダ（Items）内のメール（Item）分だけループ処理
-For Each objMailItem In adminMailItems
+Dim tag as String 'カテゴリ分けのタグ
+
+For Each objMailItem In adminMailItems  'adminフォルダ（Items）内のメール（Item）分だけループ処理
     intreplystatus = 0 '初期化
 
     With objMailItem
-        strMsgID = .PropertyAccessor.GetProperty(PR_INTERNET_MESSAGE_ID)
-        strRpMsgID = adminMailItems.Find("@SQL=""" & PR_IN_REPLY_TO_ID & """ = '" & strMsgID & "'")
+
+        '返信フラグの情報を取得：strInterplystatus
         intreplystatus = .PropertyAccessor.GetProperty(PR_LAST_ACTION)
-
-
-
          Select Case intreplystatus
             Case 0
                 strInterplystatus = "未返信"
@@ -62,32 +60,31 @@ For Each objMailItem In adminMailItems
                 strInterplystatus = "転送"
         End Select
 
+        'メール部の分類情報を取得
+        tag = メールの分類(objMailItem)
 
+        '返信アイテムがあるかどうかの判定、今回は使用していない
+        'If intreplystatus <> 0 Then
+        '    strMsgID = .PropertyAccessor.GetProperty(PR_INTERNET_MESSAGE_ID)
+        '    strRpMsgID = adminMailItems.Find("@SQL=""" & PR_IN_REPLY_TO_ID & """ = '" & strMsgID & "'")
+        'End If
 
+        excelInput(i, 0) = .ReceivedTime
+        excelInput(i, 1) = .Subject
+        excelInput(i, 2) = strInterplystatus
+        excelInput(i, 3) = .Body
+        excelInput(i, 4) = tag
+
+        tag = ""
+        i = i + 1
 
     End With
-
-
-
-
-
-
-
-
 
 Next objMailItem
 
 
-
-
-
-'Excelに出力
-Dim i As Long 'ループ回数のみを管理する変数
-Dim CellCount As Long 'メールの情報を書き出すセルを管理する変数
-CellCount = 0
-
 Call 高速化ON
-
+Call Excelに出力()
 Call 高速化OFF
 
 End Sub
