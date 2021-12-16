@@ -35,7 +35,7 @@ Set adminMailItems = myLocalFolder_admin.Items
 Dim objMailItem As Item
 Dim intreplystatus As Integer   '返信、全員に返信、転送の識別子（102,103,104）
 Dim strInterplystatus As String '返信有無の識別子
-Dim excelInput() As String      'Excel出力用の多次元配列
+Dim excelOutput() As String      'Excel出力用の多次元配列
 Dim i as Integer : i = 0        '配列に格納するための変数
 Redim excelInput(adminMailitems.count, 4)
 
@@ -69,11 +69,11 @@ For Each objMailItem In adminMailItems  'adminフォルダ（Items）内のメ�
         '    strRpMsgID = adminMailItems.Find("@SQL=""" & PR_IN_REPLY_TO_ID & """ = '" & strMsgID & "'")
         'End If
 
-        excelInput(i, 0) = .ReceivedTime
-        excelInput(i, 1) = .Subject
-        excelInput(i, 2) = strInterplystatus
-        excelInput(i, 3) = .Body
-        excelInput(i, 4) = tag
+        excelOutput(i, 0) = .ReceivedTime
+        excelOutput(i, 1) = .Subject
+        excelOutput(i, 2) = strInterplystatus
+        excelOutput(i, 3) = .Body
+        excelOutput(i, 4) = tag
 
         '初期化
         tag = ""
@@ -85,7 +85,7 @@ Next objMailItem
 
 
 Call 高速化ON
-Call Excelに出力()
+Call Excelに出力(excelOutput)
 Call 高速化OFF
 
 End Sub
