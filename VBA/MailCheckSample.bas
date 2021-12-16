@@ -1,4 +1,3 @@
-Sub anotherLogic()
 ' ここをトリプルクリックでマクロ全体を選択できます。
 Const PR_INTERNET_MESSAGE_ID = "http://schemas.microsoft.com/mapi/proptag/0x1035001E"
 Const PR_IN_REPLY_TO_ID = "http://schemas.microsoft.com/mapi/proptag/0x1042001E"

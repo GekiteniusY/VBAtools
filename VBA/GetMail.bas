@@ -2,8 +2,6 @@ Sub GetAdminMail()
 Dim objOutlook As Outlook.Application
 Dim myNamespace As Outlook.Namespace
 Dim myLocalFolder, myLocalFolder_support
-Dim Item_support, Item_support_inquiry1, Item_support_inquiry2, Item_support_update
-Dim Item_support_rooms, Item_support_obstacle, Item_support_etc
 
 Set objOutlook = New Outlook.Application
 Set myNamespace = objOutlook.GetNamespace("MAPI")
@@ -31,11 +29,7 @@ With ThisWorkbook.Worksheets("admin集計")
     .Cells(1, 6).value = "ReceivedTime"
 End With
 
-
 Call フォルダ毎のループ処理(Item_admin, "admin集計", CellCount)
-
-
 Call 高速化OFF
-
 
 End Sub
