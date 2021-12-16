@@ -1,4 +1,4 @@
-Sub Excelに出力()
+Sub Excelに出力(Byval excelOutput() as String)
 
 
 
