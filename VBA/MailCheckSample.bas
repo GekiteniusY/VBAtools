@@ -8,7 +8,7 @@ Sub FindRepliedItem()
     Dim strMsgID As String
     Dim fldSent As Folder
     Dim colItems As Items
-    Dim oneItem 'As MailItem
+    Dim oneItem As MailItem
 
 
     If TypeName(Application.ActiveWindow) = "Inspector" Then
