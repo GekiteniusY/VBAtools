@@ -32,7 +32,7 @@ Set adminMailItems = myLocalFolder_admin.Items
 '件名の取得、カテゴリの判定、返信要否の判定
 '一旦配列に格納する
 'Dim strMsgID As String , strRpMsgID As String '返信メールの有無をチェックするための変数
-Dim objMailItem As Object
+Dim objMailItem As Item
 Dim intreplystatus As Integer   '返信、全員に返信、転送の識別子（102,103,104）
 Dim strInterplystatus As String '返信有無の識別子
 Dim excelInput() As String      'Excel出力用の多次元配列
@@ -75,6 +75,7 @@ For Each objMailItem In adminMailItems  'adminフォルダ（Items）内のメ�
         excelInput(i, 3) = .Body
         excelInput(i, 4) = tag
 
+        '初期化
         tag = ""
         i = i + 1
 
