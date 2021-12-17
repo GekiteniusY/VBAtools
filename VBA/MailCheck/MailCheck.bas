@@ -26,21 +26,24 @@ Set objOutlook = New Outlook.Application
 Set myNamespace = objOutlook.GetNamespace("MAPI")
 Set myLocalFolder = myNamespace.Folders("ローカル保存用フォルダ") '【Custom】ローカルのルートフォルダを指定
 Set myLocalFolder_admin = myLocalFolder.Folders("admin")        '【Custom】ルートフォルダの次の階層のフォルダを指定
-Set adminMailItems = myLocalFolder_admin.Items
+
+Dim strFilter As String
+strFilter = 受信日時の指定
+Set adminMailItems = myLocalFolder_admin.Items.Restrict(strFilter)
 
 'メールオブジェクトごとの処理
 '件名の取得、カテゴリの判定、返信要否の判定
 '一旦配列に格納する
-'Dim strMsgID As String , strRpMsgID As String '返信メールの有無をチェックするための変数
-Dim objMailItem As Item
+Dim strMsgID As String, strRpMsgID As MailItem  '返信メールの有無をチェックするための変数
+Dim objMailItem As Object
 Dim intreplystatus As Integer   '返信、全員に返信、転送の識別子（102,103,104）
 Dim strInterplystatus As String '返信有無の識別子
 Dim excelOutput() As String      'Excel出力用の多次元配列
-Dim i as Integer : i = 0        '配列に格納するための変数
-Redim excelInput(adminMailitems.count, 4)
+Dim i As Integer: i = 0         '配列に格納するための変数
+ReDim excelOutput(adminMailItems.Count + 50, 4)
 
 
-Dim tag as String 'カテゴリ分けのタグ
+'Dim tag as String 'カテゴリ分け実装用
 
 For Each objMailItem In adminMailItems  'adminフォルダ（Items）内のメール（Item）分だけループ処理
     intreplystatus = 0 '初期化
@@ -48,35 +51,46 @@ For Each objMailItem In adminMailItems  'adminフォルダ（Items）内のメ�
     With objMailItem
 
         '返信フラグの情報を取得：strInterplystatus
-        intreplystatus = .PropertyAccessor.GetProperty(PR_LAST_ACTION)
-         Select Case intreplystatus
-            Case 0
-                strInterplystatus = "未返信"
-            Case 102
-                strInterplystatus = "返信"
-            Case 103
-                strInterplystatus = "全員に返信"
-            Case 104
-                strInterplystatus = "転送"
-        End Select
+        'intreplystatus = .PropertyAccessor.GetProperty(PR_LAST_ACTION)
+        'Select Case intreplystatus
+        '   Case 0
+        '       strInterplystatus = "未返信"
+        '   Case 102
+        '       strInterplystatus = "返信"
+        '   Case 103
+        '       strInterplystatus = "全員に返信"
+        '   Case 104
+        '       strInterplystatus = "転送"
+        'End Select
 
         'メール部の分類情報を取得
-        tag = メールの分類(objMailItem)
+        'tag = メールの分類(objMailItem)
 
-        '返信アイテムがあるかどうかの判定、今回は使用していない
-        'If intreplystatus <> 0 Then
-        '    strMsgID = .PropertyAccessor.GetProperty(PR_INTERNET_MESSAGE_ID)
-        '    strRpMsgID = adminMailItems.Find("@SQL=""" & PR_IN_REPLY_TO_ID & """ = '" & strMsgID & "'")
-        'End If
+        
+        
+        If .Subject  Like "*RE*"  Then 'REがついている
+            strInterplystatus = "OK"
+        Else 'REがついていない
+            strMsgID = .PropertyAccessor.GetProperty(PR_INTERNET_MESSAGE_ID)
+            Set strRpMsgID = adminMailItems.Find("@SQL=""" & PR_IN_REPLY_TO_ID & """ = '" & strMsgID & "'")
+  
+            If strRpMsgID Is Nothing Then
+                strInterplystatus = "未返信"
+            Else
+                strInterplystatus = "OK"
+            End If
+        End If        
+        
+  
 
         excelOutput(i, 0) = .ReceivedTime
         excelOutput(i, 1) = .Subject
         excelOutput(i, 2) = strInterplystatus
-        excelOutput(i, 3) = .Body
-        excelOutput(i, 4) = tag
+        'excelOutput(i, 3) = .Body  カテゴリ分け実装用
+        'excelOutput(i, 4) = tag  カテゴリ分け実装用
 
         '初期化
-        tag = ""
+        'tag = ""
         i = i + 1
 
     End With
