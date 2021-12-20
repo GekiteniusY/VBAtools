@@ -53,7 +53,7 @@ For Each objMailItem In adminMailItems  'adminフォルダ（Items）内のメ�
         End Select
 
         If strInterplystatus = "OK"  Then 
-            End If
+            
         Else 'REがついていない
             strMsgID = .PropertyAccessor.GetProperty(PR_INTERNET_MESSAGE_ID)
             Set strRpMsgID = adminMailItems.Find("@SQL=""" & PR_IN_REPLY_TO_ID & """ = '" & strMsgID & "'")
