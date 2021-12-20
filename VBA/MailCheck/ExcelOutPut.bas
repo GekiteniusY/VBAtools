@@ -1,6 +1,10 @@
-Sub Excelに出力(ByRef excelOutput() as String)
+Sub Excelに出力(excelOutput() As String)
+Dim i As Integer
+Dim ws As Worksheet
 
-Range(Range("A1"), Range("A1").Offset(0, excelOutput.count))  = excelOutput
+Set ws = Worksheets("マクロ出力先")
+i = UBound(excelOutput) - LBound(excelOutput) - 1
 
+ws.Range(Range("A2"), Range("A2").Offset(i, 3)) = excelOutput
 
 End Sub
