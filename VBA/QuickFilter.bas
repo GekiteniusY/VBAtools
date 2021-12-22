@@ -24,9 +24,14 @@ End Sub
 
 Sub FilterOFF()
     Dim cell As String
-    ActiveSheet.Range("A1").AutoFilter  'フィルタ解除'
+    ActiveSheet.ShowAllData  'フィルタ解除'
     cell = cellState("get")
-    Range(cell).Activate    'アクティブセルを復元'
+
+    If cell = vbNullString Then
+    Else
+        Range(cell).Activate    'アクティブセルを復元'
+    End If
+    
     Call cellState("clear")             'アクティブセルの値を初期化'
 End Sub
 

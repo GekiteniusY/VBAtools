@@ -1,6 +1,6 @@
 Sub Excelに出力(excelOutput() As String)
     'Status：一部完成
-    'カテゴリわけの情報の出力に対応させる
+    'カテゴリわけの情報の出力に対応させる⇒出力先シートの指定
 Dim i As Integer
 Dim ws As Worksheet
 
