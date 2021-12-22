@@ -24,51 +24,54 @@ Set adminMailItems = myLocalFolder_admin.Items.Restrict(strFilter)
 
 'フラグ付けの結果などを格納するための配列：Excel出力に利用
 Dim excelOutput() As String                     
-ReDim excelOutput(adminMailItems.Count + 50, 2) 'カテゴリ分け実装時には2→4に変更
+ReDim excelOutput(adminMailItems.Count + 50, 3) 
 
-'返信メールの有無をチェックするための変数
-Dim strMsgID As String, strRpMsgID As MailItem, strInterplystatus As String
-'Dim tag as String 'カテゴリ分け実装用
+'チェック用の変数
+Dim mailTitle As String
+Dim strInterplystatus As String
+Dim strMsgID As String, strRpMsgID As MailItem
+Dim tag as String
+tag = ""
 
 'For Eachループで使用
 Dim objMailItem As Object, i As Integer: i = 0
-Dim mailTitle As String
 
-For Each objMailItem In adminMailItems  'adminフォルダ（Items）内のメール（Item）分だけループ処理
+
+For Each objMailItem In adminMailItems                  'adminフォルダ（Items）内のメール（Item）分だけループ処理
     With objMailItem
 
-        mailTitle 
+        mailTitle = .Subject
+        strMsgID = .PropertyAccessor.GetProperty(PR_INTERNET_MESSAGE_ID)
+        Set strRpMsgID = adminMailItems.Find("@SQL=""" & PR_IN_REPLY_TO_ID & """ = '" & strMsgID & "'")
 
-        'tag = メールの分類(objMailItem)    'カテゴリ分け実装用
-        Select Case True    'RE,Re,FWがついている
-            Case .Subject Like "*RE*"
-                strInterplystatus = "OK"
-            Case .Subject Like "*Re*"
-                strInterplystatus = "OK"
-            Case .Subject Like "*FW*"
-                strInterplystatus = "OK"
-        End Select
+        '返信済みかどうかのチェック===========================================
+        If strRpMsgID Is Nothing Then
+            strInterplystatus = ReplyCheck(mailTitle)   '親アイテムが見つからない場合：タイトルで判定
+        Else
+            strInterplystatus = "OK"                    '親アイテムがある場合：OKフラグ
+        End If
 
-        If strInterplystatus = "OK"  Then 
-            End If
-        Else 'REがついていない
-            strMsgID = .PropertyAccessor.GetProperty(PR_INTERNET_MESSAGE_ID)
-            Set strRpMsgID = adminMailItems.Find("@SQL=""" & PR_IN_REPLY_TO_ID & """ = '" & strMsgID & "'")
-  
-            If strRpMsgID Is Nothing Then
-                strInterplystatus = "未返信"
-            Else
-                strInterplystatus = "OK"
-            End If
-        End If        
+        '問い合わせのカテゴリ判定===========================================
+        If strRpMsgID Is Nothing Then
+            tag = TitleCategoryCheck(mailTitle)         '親アイテムが見つからない場合：タイトルでカテゴリ判定
+        Else
+            tag = TitleCheckAtSummaryFile(mailTitle)    '親アイテムがある場合：集計元のExcelデータでカテゴリ判定
+        End If
+        
+        If tag = "" The                                 'タイトルで判定がつかない且つ、集計元のExcelにも情報がない場合
+            tag = BodyCategoryCheck(.body)              'メールの本文でカテゴリ判定
+        End If
 
+        '配列への格納===========================================
         excelOutput(i, 0) = .ReceivedTime
-        excelOutput(i, 1) = .Subject
+        excelOutput(i, 1) = mailTitle
         excelOutput(i, 2) = strInterplystatus
-        'excelOutput(i, 4) = tag  カテゴリ分け実装用
+        excelOutput(i, 4) = tag
 
-        '初期化
-        'tag = ""
+        '初期化とインクリメント===========================================
+        mailTitle = ""
+        strInterplystatus = ""
+        tag = ""
         i = i + 1
 
     End With
