@@ -4,12 +4,7 @@ Sub AdminFlagging()
 '自身の環境に応じて変える必要があります。
 '
 'Outlookオブジェクト操作用の共通設定----------------------------------------------------------------------------
-Dim objOutlook As Outlook.Application
-Dim myNamespace As Outlook.Namespace
-Set objOutlook = New Outlook.Application
-Set myNamespace = objOutlook.GetNamespace("MAPI")
-Const PR_INTERNET_MESSAGE_ID = "http://schemas.microsoft.com/mapi/proptag/0x1035001E"
-Const PR_IN_REPLY_TO_ID = "http://schemas.microsoft.com/mapi/proptag/0x1042001E"
+Call Initialize
 
 
 'メールボックス・メールアイテム操作用の個別設定---------------------------------------------------------------------
@@ -37,12 +32,14 @@ Dim strMsgID As String, strRpMsgID As MailItem, strInterplystatus As String
 
 'For Eachループで使用
 Dim objMailItem As Object, i As Integer: i = 0
+Dim mailTitle As String
 
 For Each objMailItem In adminMailItems  'adminフォルダ（Items）内のメール（Item）分だけループ処理
     With objMailItem
-    
-        'tag = メールの分類(objMailItem)    'カテゴリ分け実装用
 
+        mailTitle 
+
+        'tag = メールの分類(objMailItem)    'カテゴリ分け実装用
         Select Case True    'RE,Re,FWがついている
             Case .Subject Like "*RE*"
                 strInterplystatus = "OK"
@@ -53,7 +50,7 @@ For Each objMailItem In adminMailItems  'adminフォルダ（Items）内のメ�
         End Select
 
         If strInterplystatus = "OK"  Then 
-            
+            End If
         Else 'REがついていない
             strMsgID = .PropertyAccessor.GetProperty(PR_INTERNET_MESSAGE_ID)
             Set strRpMsgID = adminMailItems.Find("@SQL=""" & PR_IN_REPLY_TO_ID & """ = '" & strMsgID & "'")
@@ -68,7 +65,6 @@ For Each objMailItem In adminMailItems  'adminフォルダ（Items）内のメ�
         excelOutput(i, 0) = .ReceivedTime
         excelOutput(i, 1) = .Subject
         excelOutput(i, 2) = strInterplystatus
-        'excelOutput(i, 3) = .Body  カテゴリ分け実装用
         'excelOutput(i, 4) = tag  カテゴリ分け実装用
 
         '初期化
