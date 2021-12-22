@@ -52,3 +52,12 @@ Function BodyCategoryCheck(ByVal mailBody as String) As String
     
     'このファンクションで判定できない場合は、"判定不可"のフラグを付ける
 End Function
+
+Function SearchWord(ByVal keyWord as String) As String
+    'Status：未完成
+    '作成途中
+
+    
+
+
+End Function
